@@ -1,0 +1,109 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wibot 
+  namespace: iaas-awesom-o
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        task: wibot 
+        k8s-app: wibot 
+    spec:
+      containers:
+      - name: wibot 
+        image: registry-qa.webex.com/iaas-storage/wibot0.1.10:latest
+        volumeMounts:
+        - mountPath: "/opt/wibot"
+          name: wibot-users-volume
+        env:
+        - name: NETAPP_7MODE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: NETAPP_7MODE_USERNAME
+        - name: NETAPP_7MODE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: NETAPP_7MODE_PASSWORD
+        - name: NETAPP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: NETAPP_USERNAME
+        - name: NETAPP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: NETAPP_PASSWORD
+        - name: SOLIDFIRE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: SOLIDFIRE_USERNAME
+        - name: SOLIDFIRE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: SOLIDFIRE_PASSWORD
+        - name: PURE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: PURE_USERNAME
+        - name: PURE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: PURE_PASSWORD
+        - name: BOT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: BOT_NAME
+        - name: BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: BOT_TOKEN
+        - name: INFRADB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: INFRADB_USERNAME
+        - name: INFRADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: INFRADB_PASSWORD
+        - name: INFRADB_GRAPHQL_URL
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: INFRADB_GRAPHQL_URL
+        - name: SNOW_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: SNOW_USERNAME
+        - name: SNOW_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wibot-secret
+              key: SNOW_PASSWORD
+        - name: SNOW_INSTANCE 
+          value: ciscowebex
+        - name: SNOW_SAML_URL
+          value: https://cloudsso.cisco.com/idp/sts.wst
+      volumes:
+      - name: wibot-users-volume 
+        configMap:
+            name: wibot-users 
